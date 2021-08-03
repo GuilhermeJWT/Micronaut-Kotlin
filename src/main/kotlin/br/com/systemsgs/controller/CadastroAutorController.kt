@@ -8,6 +8,7 @@ import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Get
 import io.micronaut.http.annotation.Post
+import io.micronaut.http.uri.UriBuilder
 import io.micronaut.validation.Validated
 import javax.validation.Valid
 
@@ -16,14 +17,13 @@ import javax.validation.Valid
 class CadastroAutorController (val autorRepository: AutorRepository){
 
     @Post("/salvar")
-    fun cadastra(@Body @Valid modelAutorDTO: ModelAutorDTO){
+    fun cadastra(@Body @Valid modelAutorDTO: ModelAutorDTO) : HttpResponse<Any>{
+        val modelAutor = modelAutorDTO.converteEntidade()
+        autorRepository.save(modelAutor)
 
-        println("Requisição: ${modelAutorDTO}")
+        val uri = UriBuilder.of("/api/autores/salvar/{id}").expand(mutableMapOf(Pair("id", modelAutor.id)))
 
-        val autor = modelAutorDTO.converteEntidade()
-        autorRepository.save(autor)
-
-        println("ModelAutor: ${autor}")
+        return HttpResponse.created(uri)
     }
 
     @Get("/listarTodos")
