@@ -1,6 +1,7 @@
 package br.com.systemsgs.controller
 
 import br.com.systemsgs.dto.ModelAutorDTO
+import br.com.systemsgs.repository.AutorRepository
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Post
@@ -9,7 +10,7 @@ import javax.validation.Valid
 
 @Validated
 @Controller("/api/autores")
-class CadastroAutorController {
+class CadastroAutorController (val autorRepository: AutorRepository){
 
     @Post
     fun cadastra(@Body @Valid modelAutorDTO: ModelAutorDTO){
@@ -17,6 +18,7 @@ class CadastroAutorController {
         println("Requisição: ${modelAutorDTO}")
 
         val autor = modelAutorDTO.converteEntidade()
+        autorRepository.save(autor)
 
         println("ModelAutor: ${autor}")
     }
