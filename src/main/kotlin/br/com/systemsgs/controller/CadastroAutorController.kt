@@ -1,6 +1,6 @@
 package br.com.systemsgs.controller
 
-import br.com.systemsgs.dto.NovoAutorRequest
+import br.com.systemsgs.dto.ModelAutorDTO
 import io.micronaut.http.annotation.Body
 import io.micronaut.http.annotation.Controller
 import io.micronaut.http.annotation.Post
@@ -12,8 +12,13 @@ import javax.validation.Valid
 class CadastroAutorController {
 
     @Post
-    fun cadastra(@Body @Valid request: NovoAutorRequest){
-        println(request)
+    fun cadastra(@Body @Valid modelAutorDTO: ModelAutorDTO){
+
+        println("Requisição: ${modelAutorDTO}")
+
+        val autor = modelAutorDTO.converteEntidade()
+
+        println("ModelAutor: ${autor}")
     }
 
 }
