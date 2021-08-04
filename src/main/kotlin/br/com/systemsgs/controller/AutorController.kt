@@ -7,6 +7,7 @@ import io.micronaut.http.HttpResponse
 import io.micronaut.http.annotation.*
 import io.micronaut.http.uri.UriBuilder
 import io.micronaut.validation.Validated
+import javax.transaction.Transactional
 import javax.validation.Valid
 
 @Validated
@@ -29,6 +30,27 @@ class AutorController (val autorRepository: AutorRepository){
         val resposta = autores.map { autor -> DetalhesAutorResponse(autor) }
 
         return HttpResponse.ok(resposta)
+    }
+
+    @Get("/pesquisaAutor")
+    @Transactional
+    fun pesquisaAutor(@QueryValue(defaultValue = "") email: String) : HttpResponse<Any>{
+
+        if(email.isBlank()){
+            val autores = autorRepository.findAll()
+            val resposta = autores.map { autor -> DetalhesAutorResponse(autor) }
+
+            return HttpResponse.ok(resposta)
+        }
+
+       val possivelAutor = autorRepository.findByEmail(email)
+
+        if(!possivelAutor.isPresent){
+            return HttpResponse.notFound()
+        }
+
+        val autor = possivelAutor.get()
+        return HttpResponse.ok(DetalhesAutorResponse(autor))
     }
 
     @Put("/atualizar/{id}")
