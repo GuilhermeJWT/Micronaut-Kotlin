@@ -4,10 +4,7 @@ import br.com.systemsgs.dto.DetalhesAutorResponse
 import br.com.systemsgs.dto.ModelAutorDTO
 import br.com.systemsgs.repository.AutorRepository
 import io.micronaut.http.HttpResponse
-import io.micronaut.http.annotation.Body
-import io.micronaut.http.annotation.Controller
-import io.micronaut.http.annotation.Get
-import io.micronaut.http.annotation.Post
+import io.micronaut.http.annotation.*
 import io.micronaut.http.uri.UriBuilder
 import io.micronaut.validation.Validated
 import javax.validation.Valid
@@ -32,6 +29,21 @@ class CadastroAutorController (val autorRepository: AutorRepository){
         val resposta = autores.map { autor -> DetalhesAutorResponse(autor) }
 
         return HttpResponse.ok(resposta)
+    }
+
+    @Put("/atualizar/{id}")
+    fun atualizar(@PathVariable id: Long, descricao: String) : HttpResponse<Any>{
+        val possivelAutor = autorRepository.findById(id)
+
+        if(!possivelAutor.isPresent){
+            return HttpResponse.notFound()
+        }
+
+        val autor = possivelAutor.get()
+        autor.descricao = descricao
+        autorRepository.update(autor)
+
+        return HttpResponse.ok(DetalhesAutorResponse(autor))
     }
 
 }

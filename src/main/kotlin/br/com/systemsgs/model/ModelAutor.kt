@@ -8,7 +8,7 @@ import javax.persistence.Table
 
 @Entity
 @Table(name = "autor")
-class ModelAutor (val nome: String, val email: String, val descricao: String)
+class ModelAutor (val nome: String, val email: String, var descricao: String)
 {
 
     @Id
