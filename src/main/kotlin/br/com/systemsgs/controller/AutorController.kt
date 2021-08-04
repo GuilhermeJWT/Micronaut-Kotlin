@@ -11,7 +11,7 @@ import javax.validation.Valid
 
 @Validated
 @Controller("/api/autores")
-class CadastroAutorController (val autorRepository: AutorRepository){
+class AutorController (val autorRepository: AutorRepository){
 
     @Post("/salvar")
     fun cadastra(@Body @Valid modelAutorDTO: ModelAutorDTO) : HttpResponse<Any>{
@@ -44,6 +44,19 @@ class CadastroAutorController (val autorRepository: AutorRepository){
         autorRepository.update(autor)
 
         return HttpResponse.ok(DetalhesAutorResponse(autor))
+    }
+
+    @Delete("/deletar/{id}")
+    fun deletar(@PathVariable id: Long) : HttpResponse<Any>{
+        val possivelAutor = autorRepository.findById(id)
+
+        if(!possivelAutor.isPresent){
+            return HttpResponse.notFound()
+        }
+
+        autorRepository.deleteById(id)
+
+        return HttpResponse.ok("Autor Removido com Sucesso!!!")
     }
 
 }
